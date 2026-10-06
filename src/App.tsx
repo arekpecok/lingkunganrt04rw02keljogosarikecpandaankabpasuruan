@@ -66,7 +66,7 @@ export default function App() {
   // Status
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<string>('Baru saja');
-  const [serverStatus, setServerStatus] = useState<'connected' | 'saving' | 'error'>('connected');
+  const [serverStatus, setServerStatus] = useState<'connected' | 'local' | 'saving' | 'error'>('connected');
 
   // Trigger feedback toast
   const triggerToast = (msg: string) => {
@@ -78,7 +78,7 @@ export default function App() {
     }, 3000);
   };
 
-  // Helper to persist strictly to Server AI Studio (/data/db.json) - Lapis 1 Saja
+  // Helper to persist strictly to Server AI Studio or Local Cache
   const persistToServer = async (
     p: RTProfile,
     ann: PengumumanItem[],
@@ -95,17 +95,17 @@ export default function App() {
       umkm: u,
       adminPassword: customPassword,
     };
-    const ok = await saveDataToServer(bundle);
-    if (ok) {
-      setServerStatus('connected');
-      triggerToast(successMsg);
+    const res = await saveDataToServer(bundle);
+    if (res.success) {
+      setServerStatus(res.mode === 'server' ? 'connected' : 'local');
+      triggerToast(res.mode === 'server' ? successMsg : 'Tersimpan di Penyimpanan Perangkat (Mode GitHub)!');
     } else {
       setServerStatus('error');
-      triggerToast('Gagal menyimpan ke server!');
+      triggerToast('Gagal menyimpan data!');
     }
   };
 
-  // Load data strictly from Server AI Studio (Lapis 1) on mount
+  // Load data on mount
   useEffect(() => {
     const savedTab = loadActiveTabSession('profil') as ActiveTab;
     if (['profil', 'pengumuman', 'galeri', 'umkm'].includes(savedTab)) {
@@ -114,10 +114,10 @@ export default function App() {
     setIsPengurus(loadIsPengurusSession());
 
     setIsLoading(true);
-    fetchDataFromServer().then((serverData) => {
+    fetchDataFromServer().then(({ data: serverData, mode }) => {
       setIsLoading(false);
+      setServerStatus(mode === 'server' ? 'connected' : 'local');
       if (serverData) {
-        setServerStatus('connected');
         if (serverData.adminPassword) {
           setAdminPassword(serverData.adminPassword);
         }
@@ -137,8 +137,6 @@ export default function App() {
           const date = new Date(serverData.updatedAt);
           setLastSaved(date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
         }
-      } else {
-        setServerStatus('error');
       }
     });
   }, []);
@@ -529,11 +527,11 @@ export default function App() {
           <div className="flex items-center gap-2">
             <Server className="w-4 h-4 text-emerald-300" />
             <span>
-              <strong>Penyimpanan Tunggal (Lapis 1):</strong> Data disimpan langsung di berkas server <code>/data/db.json</code> Google AI Studio.
+              <strong>Penyimpanan:</strong> {serverStatus === 'connected' ? 'Server AI Studio (/data/db.json) Aktif' : 'Penyimpanan Mandiri (Mode GitHub / Web) Aktif'}
             </span>
           </div>
           <div className="flex items-center gap-3 text-[11px] text-emerald-200">
-            <span>Status Server: <strong className="text-emerald-300">{serverStatus === 'connected' ? 'Tersambung Aktif' : serverStatus === 'saving' ? 'Menyimpan...' : 'Periksa Server'}</strong></span>
+            <span>Status: <strong className="text-emerald-300">{serverStatus === 'connected' ? 'Server Aktif' : serverStatus === 'local' ? 'GitHub / Lokal' : serverStatus === 'saving' ? 'Menyimpan...' : 'Siap'}</strong></span>
             <span aria-hidden="true">·</span>
             <span>Terakhir disimpan: <strong>{lastSaved}</strong></span>
           </div>
