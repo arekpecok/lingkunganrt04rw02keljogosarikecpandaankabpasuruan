@@ -1,0 +1,35 @@
+{
+  "profile": {
+    "namaRt": "RT.04 RW.02 Lingkungan Jogonalan",
+    "kelurahan": "Jogosari",
+    "kecamatan": "Pandaan",
+    "kabupaten": "Pasuruan",
+    "ketuaRt": "",
+    "sekretaris": "",
+    "bendahara": "",
+    "seksiKeamanan": "",
+    "visi": "",
+    "misi": "",
+    "sambutan": "",
+    "kontakWa": "",
+    "alamatSekretariat": "",
+    "jadwalLayanan": "",
+    "jumlahKk": "",
+    "jumlahWarga": ""
+  },
+  "pengumuman": [
+    {
+      "id": "ann-1791302391602",
+      "judul": "Tes",
+      "tanggal": "2026-10-06",
+      "kategori": "Lainnya",
+      "isi": "Tes",
+      "penulis": "Pengurus RT.04",
+      "penting": false
+    }
+  ],
+  "galeri": [],
+  "umkm": [],
+  "adminPassword": "adminrt04",
+  "updatedAt": "2026-10-06T16:04:35.859Z"
+}

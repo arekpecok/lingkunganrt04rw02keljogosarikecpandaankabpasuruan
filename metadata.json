@@ -1,0 +1,6 @@
+{
+  "name": "Sistem Informasi Warga Jogonalan RT.04 RW.02",
+  "description": "Sistem keterbukaan informasi warga Lingkungan Jogonalan RT.04 RW.02 Kelurahan Jogosari, Kecamatan Pandaan, Kabupaten Pasuruan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
